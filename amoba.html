@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="amoba.css">
+    <title>Amőba</title>
+</head>
+<body>
+    <script>
+        const HEIGHT = 20;
+        const WIDTH = 20;
+
+        let tabla = [];
+
+        let player = "X";
+        let color = "cyan";
+
+        const alap = document.createElement("div");
+        alap.id = "alap";
+        document.body.appendChild(alap);
+
+        for (let i = 0; i < HEIGHT; i++) {
+            let sor = [];
+            for(let j = 0; j < WIDTH; j++){
+                sor.push("_");
+                const cella = document.createElement("div");
+                cella.setAttribute("sor", i);
+                cella.setAttribute("oszl", j);
+                cella.setAttribute("onclick", "lepes(this)");
+                cella.classList.add("cella");
+                alap.appendChild(cella);
+            }
+            tabla.push(sor);
+        }
+
+        function gyozelem(sor, oszl){
+            let db = 0;
+            for(let i = 0; i < HEIGHT; i++){
+                if(tabla[i][oszl] === player){
+                    db++;
+                }else{
+                    db = 0;
+                }
+                if(db === 5){
+                    return true;
+                }
+            }
+
+            db = 0;
+            for(let j = 0; j < WIDTH; j++){
+                if(tabla[sor][j] === player){
+                    db++;
+                }else{
+                    db = 0;
+                }
+                if(db === 5){
+                    return true;
+                }
+            }
+            
+            db = 0;
+            let i = sor;
+            let j = oszl;
+            while(i >= 0 && j >= 0 && tabla[i][j] === player){
+                db++;
+                i--;
+                j--;
+            }
+            i = sor;
+            j = oszl;
+            while(i < HEIGHT && j < WIDTH && tabla[i][j] === player){
+                db++;
+                i++;
+                j++;
+            }
+
+            if(db === 6){
+                return true
+            }
+
+            db = 0;
+            i = sor;
+            j = oszl;
+            while(i >= 0 && j < WIDTH && tabla[i][j] === player){
+                db++;
+                i--;
+                j++;
+            }
+
+            i = sor;
+            j = oszl;
+            while(i < HEIGHT && j >= 0 && tabla[i][j] === player){
+                db++;
+                i++;
+                j--;
+            }
+
+            if(db === 6){
+                return true;
+            }
+        
+            return false;
+        }
+
+        function lepes(melyik){
+            const sor = parseInt(melyik.getAttribute("sor"));
+            const oszl = parseInt(melyik.getAttribute("oszl"));
+            if(tabla[sor][oszl] === "_"){
+                tabla[sor][oszl] = player;
+                melyik.style.color = color;
+                melyik.textContent = player;
+                if(gyozelem(sor, oszl)){
+                    setTimeout(() => {
+                        window.alert(player + " nyert!");
+                    }, 100);
+
+                    setTimeout(()=>{
+                        window.location.reload();
+                    }, 1000)
+                    
+                }else{
+                    if(player === "X"){
+                        player = "O";
+                        color = "yellow";
+                    }else{
+                        player = "X";
+                        color = "cyan";
+                    }
+                }
+            }
+            console.log(tabla);
+        }
+    </script>
+</body>
+</html>
